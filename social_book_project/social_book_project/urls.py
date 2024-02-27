@@ -25,5 +25,15 @@ urlpatterns = [
     path('login/', views.user_login, name='login'),
     path('index/', views.index, name='index'),
     path('logout/', views.logoutpage, name='logout'),
+    path('profile/', views.profile, name='profile'),
+    path('faq/', views.faq, name='faq'),
+    #leftsidebar
+    path('form-basic/', views.form_basic, name='form_basic'),
+    path('advanced-components/', views.advanced_components, name='advanced_components'),
+    path('form-wizard/', views.form_wizard, name='form_wizard'),
+    path('html5-editor/', views.html5_editor, name='html5_editor'),
+    path('form-pickers/', views.form_pickers, name='form_pickers'),
+    path('image-cropper/', views.image_cropper, name='image_cropper'),
+    path('image-dropzone/', views.image_dropzone, name='image_dropzone'),
 ]
 

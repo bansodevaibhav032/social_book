@@ -42,3 +42,35 @@ def signup(request):
 def logoutpage(request):
     logout(request)
     return redirect('login')
+
+def profile(request):
+    return render(request, profile.html)
+
+def faq(request):
+    return render(request, faq.html)
+
+
+#left side bar 
+
+def form_basic(request):
+    return render(request, 'form_basic.html')
+
+def advanced_components(request):
+    return render(request, 'advanced_components.html')
+
+def form_wizard(request):
+    return render(request, 'form_wizard.html')
+
+def html5_editor(request):
+    return render(request, 'html5_editor.html')
+
+def form_pickers(request):
+    return render(request, 'form_pickers.html')
+
+def image_cropper(request):
+    return render(request, 'image_cropper.html')
+
+def image_dropzone(request):
+    return render(request, 'image_dropzone.html')
+
+
