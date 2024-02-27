@@ -7,8 +7,8 @@ from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
 
-def home(request):
-    return render(request, 'home.html')
+def index(request):
+    return render(request, 'index.html')
 
 def user_login(request):
     if request.method=='POST':
@@ -17,7 +17,7 @@ def user_login(request):
         user=authenticate(request,username=username,password=pass1)
         if user is not None:
             auth_login(request,user)
-            return redirect('home')
+            return redirect('index')
         else:
             return HttpResponse('username or password is incorrect!!!')
 
