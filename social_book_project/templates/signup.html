@@ -21,7 +21,7 @@ body{
 }
 .background{
     width: 430px;
-    height: 520px;
+    height: 20px;
     position: absolute;
     transform: translate(-50%,-50%);
     left: 50%;
@@ -149,12 +149,22 @@ button{
         <label for="email">Email</label>
         <input type="email" placeholder="Email or Phone" name="email" id="email">
 
+        <!-- Add new fields for public_visibility, birth_year, and address -->
+        <label for="public_visibility">Public Visibility</label>
+        <input type="checkbox" name="public_visibility" id="public_visibility">
+
+        <label for="birth_year">Birth Year</label>
+        <input type="number" placeholder="Birth Year" name="birth_year" id="birth_year">
+
+        <label for="address">Address</label>
+        <input type="text" placeholder="Address" name="address" id="address">
+
         <label for="password1">Password</label>
         <input type="password" placeholder="Password" id="password1" name="password1">
 
 
-        <label for="password2">Confrom Password</label>
-        <input type="password" placeholder="Confrom Password" id="password2" name="password2">
+        <label for="password2">Confirm Password</label>
+        <input type="password" placeholder="Confirm Password" id="password2" name="password2">
         <button type="submit">Signup</button>
         
         <a href="{% url 'login' %}" >i have already account</a>
