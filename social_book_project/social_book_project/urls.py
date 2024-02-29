@@ -18,6 +18,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from registration import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -35,5 +37,7 @@ urlpatterns = [
     path('form-pickers/', views.form_pickers, name='form_pickers'),
     path('image-cropper/', views.image_cropper, name='image_cropper'),
     path('image-dropzone/', views.image_dropzone, name='image_dropzone'),
+
+    path('authors-and-sellers/', views.authors_and_sellers, name='authors_and_sellers'),
 ]
 

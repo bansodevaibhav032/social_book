@@ -143,13 +143,12 @@ button{
         {% csrf_token %} 
         <h3>Signup Here</h3>
 
-        <label for="username">Username</label>
-        <input type="text" placeholder="Username" name="username" id="username">
+        <label for="username">Name</label>
+        <input type="text" placeholder="Name" name="username" id="username">
 
         <label for="email">Email</label>
-        <input type="email" placeholder="Email or Phone" name="email" id="email">
+        <input type="email" placeholder="Email" name="email" id="email">
 
-        <!-- Add new fields for public_visibility, birth_year, and address -->
         <label for="public_visibility">Public Visibility</label>
         <input type="checkbox" name="public_visibility" id="public_visibility">
 
@@ -158,6 +157,7 @@ button{
 
         <label for="address">Address</label>
         <input type="text" placeholder="Address" name="address" id="address">
+
 
         <label for="password1">Password</label>
         <input type="password" placeholder="Password" id="password1" name="password1">

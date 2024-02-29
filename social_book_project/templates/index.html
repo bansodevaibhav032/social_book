@@ -258,10 +258,17 @@
 				<i class="ion-close-round"></i>
 			</div>
 		</div>
+		{% comment %} authors_and_sellers {% endcomment %}
+	
+	    <a href="{% url 'authors_and_sellers' %}">Authors and Sellers</a>
+
 		<div class="menu-block customscroll">
 			<div class="sidebar-menu">
 				<ul id="accordion-menu">
 					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle">
+							<span class="micon dw dw-house-1"></span><span class="mtext">Authors & Sellers</span>
+						</a>
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon dw dw-house-1"></span><span class="mtext">Home</span>
 						</a>

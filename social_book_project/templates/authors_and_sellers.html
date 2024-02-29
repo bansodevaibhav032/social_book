@@ -1,0 +1,66 @@
+<!-- templates/authors_and_sellers.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authors and Sellers</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #f9f9f9;
+        }
+
+        /* Add more styles as needed */
+    </style>
+</head>
+<body>
+    <h1>Authors and Sellers</h1>
+
+    <!-- If You Want to filter Yes/No -->
+    <!-- <form method="get">
+        {{ user_filter.form.as_p }}
+        <button type="submit">Filter</button>
+    </form> -->
+
+        <ul>
+            {% for user in users %}
+            {% if user.public_visibility %}
+            <li>
+                <strong>{{ user.username }}</strong> - {{ user.email }} - Public Visibility: {{ user.public_visibility }}
+            </li>
+            {% endif %}
+            {% endfor %}
+        </ul>
+</body>
+</html>

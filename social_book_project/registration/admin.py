@@ -4,27 +4,28 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email', 'username', 'get_age', 'public_visibility', 'address', 'is_staff', 'is_active',)
-    def get_age(self, obj):
-        return obj.age()
-    get_age.short_description = 'Age'
-    list_filter = ('is_staff', 'is_active',)
-    fieldsets = (
-        (None, {'fields': ('email', 'username', 'password')}),
-        ('Personal Info', {'fields': ('first_name', 'last_name', 'get_age', 'public_visibility', 'address')}),
-        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
-        ('Important dates', {'fields': ('last_login', 'date_joined')}),
-    )
-    add_fieldsets = (
-        (None, {
-            'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2', 'is_staff', 'is_active', 'get_age', 'public_visibility', 'address'),
-        }),
-    )
+    list_display = ('email', 'username', 'age', 'birth_year', 'address', 'public_visibility', 'is_staff', 'is_active',)
     search_fields = ('email', 'username',)
     ordering = ('email',)
 
+    fieldsets = (
+        (None, {'fields': ('email', 'username', 'password')}),
+        ('Personal Info', {'fields': ('first_name', 'last_name', 'age', 'birth_year', 'address', 'public_visibility')}),
+        ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
+        ('Important dates', {'fields': ('last_login', 'date_joined')}),
+    )
+
+    add_fieldsets = (
+        (None, {
+            'classes': ('wide',),
+            'fields': ('email', 'username', 'password1', 'password2', 'is_staff', 'is_active', 'age', 'birth_year', 'address', 'public_visibility'),
+        }),
+    )
+
+    def get_queryset(self, request):
+        # Override get_queryset to filter users in the list view
+        qs = super().get_queryset(request)
+        return qs.filter(is_superuser=False)
+
 # Register the custom admin for CustomUser
 admin.site.register(CustomUser, CustomUserAdmin)
-
-

@@ -2,7 +2,8 @@ from django.shortcuts import render, HttpResponse, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
-from .models import CustomUser  # Import your CustomUser model
+from .models import CustomUser 
+from .filters import CustomUserFilter
 
 # Create your views here.
 
@@ -20,7 +21,7 @@ def user_login(request):
             auth_login(request,user)
             return redirect('index')
         else:
-            return HttpResponse('username or password is incorrect!!!')
+            return HttpResponse('email or password is incorrect!!!')
 
     return render(request,'login.html')
 
@@ -30,13 +31,18 @@ def signup(request):
     if request.method == 'POST':
         username = request.POST.get('username')
         email = request.POST.get('email')
+        address= request.POST.get('address')
+        public_visibility = request.POST.get('public_visibility') == 'on'
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
+        age = request.POST.get('age')
+        birth_year = request.POST.get('birth_year')
+        address = request.POST.get('address')
 
         if pass1 != pass2:
             return HttpResponse('Your Passwords are Not Matched')
         else:
-            my_user = CustomUser.objects.create_user(email=email, username=username, password=pass1)
+            my_user = CustomUser.objects.create_user(email=email, username=username, password=pass1, age=age, birth_year=birth_year, address=address,public_visibility=public_visibility)
             my_user.save()
             return redirect('login')
     return render(request, 'signup.html')
@@ -77,3 +83,13 @@ def image_dropzone(request):
     return render(request, 'image_dropzone.html')
 
 
+def authors_and_sellers(request):
+    user_filter = CustomUserFilter(request.GET, queryset=CustomUser.objects.all())
+    users = user_filter.qs
+
+    context = {
+        'users': users,
+        'user_filter': user_filter,
+    }
+
+    return render(request, 'authors_and_sellers.html', context)
