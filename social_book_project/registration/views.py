@@ -4,11 +4,12 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser 
 from .filters import CustomUserFilter
+from .models import UploadedFile
+from .forms import UploadFileForm
+
 
 # Create your views here.
-
 @login_required(login_url='login')
-
 def index(request):
     return render(request, 'index.html')
 
@@ -93,3 +94,19 @@ def authors_and_sellers(request):
     }
 
     return render(request, 'authors_and_sellers.html', context)
+
+
+@login_required
+def upload_books(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            uploaded_file = form.save(commit=False)
+            uploaded_file.user = request.user
+            uploaded_file.save()
+            return redirect('upload_books')
+    else:
+        form = UploadFileForm()
+
+    uploaded_files = UploadedFile.objects.filter(user=request.user)
+    return render(request, 'uploadfile.html', {'form': form, 'uploaded_files': uploaded_files})
