@@ -5,9 +5,10 @@ from django.db import models
 from django.utils import timezone
 from datetime import date
 from .managers import UserManager
+from django.conf import settings
 from django.contrib.auth import get_user_model
 class CustomUser(AbstractUser):   
-    username = models.CharField(max_length=30, unique=True, default='default_username')
+    username = models.CharField(max_length=30, unique=True, default='john')
     email = models.EmailField(unique=True)
     public_visibility = models.BooleanField(default=False)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -16,7 +17,7 @@ class CustomUser(AbstractUser):
   
 
     def save(self, *args, **kwargs):
-        current_year = 2024  # Update with the current year
+        current_year = 2024  
         if self.birth_year:
             try:
                 self.birth_year = int(self.birth_year)
@@ -35,13 +36,13 @@ class CustomUser(AbstractUser):
     objects = UserManager()
 
 class UploadedFile(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    file = models.FileField(upload_to='uploads/')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    description = models.TextField()
-    visibility = models.BooleanField(default=True)  # True for public, False for private
-    cost = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    year_published = models.PositiveIntegerField()
+    file = models.FileField(upload_to='uploads/', help_text="Upload PDF or JPEG files only.")
+    description = models.TextField(blank=True)
+    visibility = models.BooleanField(default=True, help_text="Set visibility")
+    cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    year_published = models.PositiveIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.title

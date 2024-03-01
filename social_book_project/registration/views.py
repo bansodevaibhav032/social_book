@@ -4,8 +4,10 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser 
 from .filters import CustomUserFilter
+# from .models import UploadedFile
+# from .forms import UploadFileForm
+from .forms import UploadFileForm, DisplayFileForm
 from .models import UploadedFile
-from .forms import UploadFileForm
 
 
 # Create your views here.
@@ -104,9 +106,16 @@ def upload_books(request):
             uploaded_file = form.save(commit=False)
             uploaded_file.user = request.user
             uploaded_file.save()
-            return redirect('upload_books')
+            return redirect('uploaded_files')
     else:
         form = UploadFileForm()
 
     uploaded_files = UploadedFile.objects.filter(user=request.user)
-    return render(request, 'uploadfile.html', {'form': form, 'uploaded_files': uploaded_files})
+
+    return render(request, 'uploadfile.html', {'form': form})
+
+
+@login_required
+def uploaded_files(request):
+    uploaded_files = UploadedFile.objects.filter(user=request.user)
+    return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})

@@ -29,6 +29,7 @@ urlpatterns = [
     path('logout/', views.logoutpage, name='logout'),
     path('profile/', views.profile, name='profile'),
     path('faq/', views.faq, name='faq'),
+    
     #leftsidebar
     path('form-basic/', views.form_basic, name='form_basic'),
     path('advanced-components/', views.advanced_components, name='advanced_components'),
@@ -37,8 +38,12 @@ urlpatterns = [
     path('form-pickers/', views.form_pickers, name='form_pickers'),
     path('image-cropper/', views.image_cropper, name='image_cropper'),
     path('image-dropzone/', views.image_dropzone, name='image_dropzone'),   
-    path('authors-and-sellers/', views.authors_and_sellers, name='authors_and_sellers'),     
+
+
+    #Task
+    path('authors-and-sellers/', views.authors_and_sellers, name='authors_and_sellers'),  
     path('upload_books/', views.upload_books, name='upload_books'),
+    path('uploaded_files/', views.uploaded_files, name='uploaded_files'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
