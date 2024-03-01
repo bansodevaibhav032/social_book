@@ -10,6 +10,7 @@ from django.contrib.auth import get_user_model
 class CustomUser(AbstractUser):   
     username = None
     email = models.EmailField(unique=True)
+    password=models.CharField(max_length=255,blank=True, null=True)
     public_visibility = models.BooleanField(default=False)
     address = models.CharField(max_length=255, blank=True, null=True)
     age = models.PositiveIntegerField(null=True, blank=True)
@@ -25,7 +26,9 @@ class CustomUser(AbstractUser):
             except ValueError:
                 # Handle the case where birth_year is not a valid integer
                 pass
-        super().save(*args, **kwargs)    
+        super().save(*args, **kwargs)
+
+    
 
     
     USERNAME_FIELD = 'email'

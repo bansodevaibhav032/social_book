@@ -20,7 +20,7 @@ from django.urls import path
 from registration import views
 from django.conf import settings
 from django.conf.urls.static import static
-from django.urls import include
+from registration.views import RegisterView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -47,7 +47,7 @@ urlpatterns = [
     path('uploaded_files/', views.uploaded_files, name='uploaded_files'),
 
     #api
-    
+    path('api/register/', RegisterView.as_view(), name='register'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
