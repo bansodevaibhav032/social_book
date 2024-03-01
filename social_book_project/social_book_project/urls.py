@@ -40,4 +40,3 @@ urlpatterns = [
 
     path('authors-and-sellers/', views.authors_and_sellers, name='authors_and_sellers'),
 ]
-
