@@ -8,7 +8,7 @@ from .managers import UserManager
 from django.conf import settings
 from django.contrib.auth import get_user_model
 class CustomUser(AbstractUser):   
-    username = models.CharField(max_length=30, unique=True, default='john')
+    username = None
     email = models.EmailField(unique=True)
     public_visibility = models.BooleanField(default=False)
     address = models.CharField(max_length=255, blank=True, null=True)
@@ -25,10 +25,7 @@ class CustomUser(AbstractUser):
             except ValueError:
                 # Handle the case where birth_year is not a valid integer
                 pass
-        super().save(*args, **kwargs)
-
-    def __str__(self):
-        return self.username
+        super().save(*args, **kwargs)    
 
     
     USERNAME_FIELD = 'email'

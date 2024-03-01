@@ -20,6 +20,7 @@ from django.urls import path
 from registration import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -44,6 +45,9 @@ urlpatterns = [
     path('authors-and-sellers/', views.authors_and_sellers, name='authors_and_sellers'),  
     path('upload_books/', views.upload_books, name='upload_books'),
     path('uploaded_files/', views.uploaded_files, name='uploaded_files'),
+
+    #api
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

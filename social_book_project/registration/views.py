@@ -17,9 +17,9 @@ def index(request):
 
 def user_login(request):
     if request.method=='POST':
-        username=request.POST.get('username')
+        email=request.POST.get('email')
         pass1=request.POST.get('pass')
-        user=authenticate(request,username=username,password=pass1)
+        user=authenticate(request,email=email,password=pass1)
         if user is not None:
             auth_login(request,user)
             return redirect('index')
@@ -32,7 +32,6 @@ def user_login(request):
 
 def signup(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
         email = request.POST.get('email')
         address= request.POST.get('address')
         public_visibility = request.POST.get('public_visibility') == 'on'
@@ -45,7 +44,7 @@ def signup(request):
         if pass1 != pass2:
             return HttpResponse('Your Passwords are Not Matched')
         else:
-            my_user = CustomUser.objects.create_user(email=email, username=username, password=pass1, age=age, birth_year=birth_year, address=address,public_visibility=public_visibility)
+            my_user = CustomUser.objects.create_user(email=email, password=pass1, age=age, birth_year=birth_year, address=address,public_visibility=public_visibility)
             my_user.save()
             return redirect('login')
     return render(request, 'signup.html')

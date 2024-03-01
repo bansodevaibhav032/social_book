@@ -5,12 +5,12 @@ from .models import UploadedFile
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email', 'username', 'age', 'birth_year', 'address', 'public_visibility', 'is_staff', 'is_active',)
-    search_fields = ('email', 'username',)
+    list_display = ('email',  'age', 'birth_year', 'address', 'public_visibility', 'is_staff', 'is_active',)
+    search_fields = ('email', )
     ordering = ('email',)
 
     fieldsets = (
-        (None, {'fields': ('email', 'username', 'password')}),
+        (None, {'fields': ('email',  'password')}),
         ('Personal Info', {'fields': ('first_name', 'last_name', 'age', 'birth_year', 'address', 'public_visibility')}),
         ('Permissions', {'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions')}),
         ('Important dates', {'fields': ('last_login', 'date_joined')}),
@@ -19,7 +19,7 @@ class CustomUserAdmin(UserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('email', 'username', 'password1', 'password2', 'is_staff', 'is_active', 'age', 'birth_year', 'address', 'public_visibility'),
+            'fields': ('email',  'password1', 'password2', 'is_staff', 'is_active', 'age', 'birth_year', 'address', 'public_visibility'),
         }),
     )
 
