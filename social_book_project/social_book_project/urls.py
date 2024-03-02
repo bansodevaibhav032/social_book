@@ -47,10 +47,10 @@ urlpatterns = [
     path('uploaded_files/', views.uploaded_files, name='uploaded_files'),
 
     #api
-    path('api/register/', RegisterView.as_view(), name='register'),
-    path('api/login/', LoginView.as_view(), name='login'),
-    path('api/user/', UserView.as_view(), name='user'),
     path('api/', include('registration.urls')),
-]
+
+   
+    
+]   
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

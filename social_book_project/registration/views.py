@@ -4,8 +4,6 @@ from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib.auth.decorators import login_required
 from .models import CustomUser 
 from .filters import CustomUserFilter
-# from .models import UploadedFile
-# from .forms import UploadFileForm
 from .forms import UploadFileForm, DisplayFileForm
 from .models import UploadedFile
 from rest_framework.views import APIView
@@ -17,6 +15,7 @@ from datetime import datetime, timedelta
 from jwt.exceptions import DecodeError
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+
 
 # Create your views here.
 class RegisterView(APIView):
@@ -154,7 +153,6 @@ def image_cropper(request):
 def image_dropzone(request):
     return render(request, 'image_dropzone.html')
 
-@login_required(login_url='login')
 def authors_and_sellers(request):
     user_filter = CustomUserFilter(request.GET, queryset=CustomUser.objects.all())
     users = user_filter.qs
@@ -166,8 +164,6 @@ def authors_and_sellers(request):
 
     return render(request, 'authors_and_sellers.html', context)
 
-
-@login_required(login_url='login')
 def upload_books(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -184,7 +180,7 @@ def upload_books(request):
     return render(request, 'uploadfile.html', {'form': form})
 
 
-@login_required(login_url='login')
 def uploaded_files(request):
     uploaded_files = UploadedFile.objects.filter(user=request.user)
     return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})
+
