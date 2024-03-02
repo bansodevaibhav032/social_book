@@ -23,11 +23,17 @@ class CustomUserAdmin(UserAdmin):
         }),
     )
 
-    def get_queryset(self, request):
-        # Override get_queryset to filter users in the list view
-        qs = super().get_queryset(request)
-        return qs.filter(is_superuser=False)
-
+    #for Users Only
+    # def get_queryset(self, request):
+    #     # Override get_queryset to filter users in the list view
+    #     qs = super().get_queryset(request)
+    #     return qs.filter(is_superuser=False)
+    
+    #for SuperUseronly
+    # def get_queryset(self, request):
+    #     # Override get_queryset to filter users in the list view
+    #     qs = super().get_queryset(request)
+    #     return qs.filter(is_superuser=True)
 # Register the custom admin for CustomUser
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(UploadedFile)

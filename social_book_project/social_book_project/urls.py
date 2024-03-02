@@ -16,11 +16,11 @@ Including another URLconf
 """
 # social_book_project/urls.py
 from django.contrib import admin
-from django.urls import path
+from django.urls import path,include
 from registration import views
 from django.conf import settings
 from django.conf.urls.static import static
-from registration.views import RegisterView
+from registration.views import RegisterView,LoginView,UserView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -48,6 +48,9 @@ urlpatterns = [
 
     #api
     path('api/register/', RegisterView.as_view(), name='register'),
+    path('api/login/', LoginView.as_view(), name='login'),
+    path('api/user/', UserView.as_view(), name='user'),
+    path('api/', include('registration.urls')),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

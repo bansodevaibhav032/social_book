@@ -11,6 +11,12 @@ from .models import UploadedFile
 from rest_framework.views import APIView
 from .serializers import UserSerializers
 from rest_framework.response import Response
+from rest_framework.exceptions import AuthenticationFailed
+import jwt
+from datetime import datetime, timedelta
+from jwt.exceptions import DecodeError
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 # Create your views here.
 class RegisterView(APIView):
@@ -20,7 +26,59 @@ class RegisterView(APIView):
         serializer.save()
         return Response(serializer.data)
 
-        
+class LoginView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            payload = {
+                'user_id': user.id,
+                'exp': datetime.utcnow() + timedelta(minutes=60),
+            }
+
+            token = jwt.encode(payload, 'secret', algorithm='HS256')
+            
+            response = Response({'token': token})
+            response.set_cookie(key='jwt', value=token, httponly=True)
+
+            return response
+        else:
+            return Response({'error': 'Invalid credentials'}, status=400)
+
+class UserView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            raise AuthenticationFailed('Unauthenticated')
+
+        try:
+            # Include the 'algorithms' argument when decoding the JWT token
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+        except jwt.ExpiredSignatureError:
+            raise AuthenticationFailed('Unauthenticated')
+        except DecodeError:
+            raise AuthenticationFailed('Invalid token')
+
+        user = CustomUser.objects.get(id=payload['user_id'])
+        serializer = UserSerializers(user)
+
+        return Response(serializer.data)
+class FileView(APIView):
+    def get(self, request, title):
+        file = get_object_or_404(UploadedFile, title=title)
+        # Perform any additional logic here if needed
+        # For example, you might want to check user permissions or do some processing.
+        # ...
+
+        # Return the file content as a response
+        with open(file.file.path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/octet-stream')
+            response['Content-Disposition'] = f'attachment; filename="{file.title}"'
+            return response
+
 
 @login_required(login_url='login')
 def index(request):
@@ -96,7 +154,7 @@ def image_cropper(request):
 def image_dropzone(request):
     return render(request, 'image_dropzone.html')
 
-
+@login_required(login_url='login')
 def authors_and_sellers(request):
     user_filter = CustomUserFilter(request.GET, queryset=CustomUser.objects.all())
     users = user_filter.qs
@@ -109,7 +167,7 @@ def authors_and_sellers(request):
     return render(request, 'authors_and_sellers.html', context)
 
 
-@login_required
+@login_required(login_url='login')
 def upload_books(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -126,7 +184,7 @@ def upload_books(request):
     return render(request, 'uploadfile.html', {'form': form})
 
 
-@login_required
+@login_required(login_url='login')
 def uploaded_files(request):
     uploaded_files = UploadedFile.objects.filter(user=request.user)
     return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})
