@@ -15,6 +15,7 @@ from datetime import datetime, timedelta
 from jwt.exceptions import DecodeError
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from .decorators import has_uploaded_files
 
 
 # Create your views here.
@@ -184,3 +185,9 @@ def uploaded_files(request):
     uploaded_files = UploadedFile.objects.filter(user=request.user)
     return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})
 
+
+@login_required(login_url='login')
+@has_uploaded_files
+def uploaded_files(request):
+    uploaded_files = UploadedFile.objects.filter(user=request.user)
+    return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})

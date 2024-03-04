@@ -10,7 +10,7 @@ from django.contrib.auth import get_user_model
 class CustomUser(AbstractUser):   
     username = None
     email = models.EmailField(unique=True)
-    password=models.CharField(max_length=255,blank=True, null=True)
+    password=models.CharField(max_length=255, blank=True, null=True)
     public_visibility = models.BooleanField(default=False)
     address = models.CharField(max_length=255, blank=True, null=True)
     age = models.PositiveIntegerField(null=True, blank=True)
@@ -24,7 +24,6 @@ class CustomUser(AbstractUser):
                 self.birth_year = int(self.birth_year)
                 self.age = current_year - self.birth_year
             except ValueError:
-                # Handle the case where birth_year is not a valid integer
                 pass
         super().save(*args, **kwargs)
 
@@ -46,3 +45,5 @@ class UploadedFile(models.Model):
 
     def __str__(self):
         return self.title
+
+        
