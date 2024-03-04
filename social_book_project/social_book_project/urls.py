@@ -20,7 +20,7 @@ from django.urls import path,include
 from registration import views
 from django.conf import settings
 from django.conf.urls.static import static
-from registration.views import RegisterView,LoginView,UserView
+from registration.views import RegisterView,LoginView,UserView,Verify_OTP
 
 urlpatterns = [
     path('admin/', admin.site.urls),

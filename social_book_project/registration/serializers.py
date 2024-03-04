@@ -5,7 +5,7 @@ from .models import CustomUser
 class UserSerializers(serializers.ModelSerializer):
     class Meta:
         model=CustomUser
-        fields=['id','address','email','password']
+        fields=['email','password','is_verified']
         extra_kwargs={
             'password':{"write_only":True}
         }
@@ -17,3 +17,7 @@ class UserSerializers(serializers.ModelSerializer):
             instance.set_password(password)
         instance.save()
         return instance
+    
+class VerifyAccountSerializers(serializers.Serializer):
+    email=serializers.EmailField()
+    otp=serializers.CharField()

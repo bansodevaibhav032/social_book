@@ -16,15 +16,87 @@ from jwt.exceptions import DecodeError
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 from .decorators import has_uploaded_files
-
+from .emails import *
+from .serializers import VerifyAccountSerializers
+from .emails import send_otp_via_mail
+import random 
 
 # Create your views here.
 class RegisterView(APIView):
     def post(self,request):
-        serializer=UserSerializers(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data)
+        # serializer=UserSerializers(data=request.data)
+        # serializer.is_valid(raise_exception=True)
+        # serializer.save()
+        # return Response(serializer.data)
+        try:
+            data = request.data
+            serializer = UserSerializers(data=data)
+            if serializer.is_valid():
+                user = serializer.save()
+
+                # Generate OTP
+                otp = generate_otp()
+
+                # Send OTP via email
+                send_otp_via_mail(user.email, otp)
+
+                return Response({
+                    'status': 200,
+                    'message': 'Registration Successfully. Check Email!!',
+                    'data': serializer.data,
+                })
+            return Response({
+                'status': 400,
+                'message': 'Something Went Wrong',
+                'data': serializer.errors,
+            })
+        except Exception as e:
+            print(e)
+
+class Verify_OTP(APIView):
+    def post(self, request):
+        try:
+            data = request.data
+            serializer = VerifyAccountSerializers(data=data)
+
+            if serializer.is_valid():
+                email = serializer.data['email']
+                otp = serializer.data['otp']
+
+                user = CustomUser.objects.filter(email=email)
+                if not user.exists():
+                    return Response({
+                        'status': 400,
+                        'message': 'Something Went Wrong',
+                        'data': 'Invalid Email!!!',
+                    })
+
+                user = user.first()
+                if user.otp != otp:
+                    return Response({
+                        'status': 400,
+                        'message': 'Something Went Wrong',
+                        'data': 'Wrong OTP',
+                    })
+
+                user.is_verified = True
+                user.save()
+
+                return Response({
+                    'status': 200,
+                    'message': 'Account Verified.',
+                    'data': serializer.data,
+                })
+
+            return Response({
+                'status': 400,
+                'message': 'Something Went Wrong',
+                'data': {},
+            })
+
+        except Exception as e:
+            print(e)
+
 
 class LoginView(APIView):
     def post(self, request):
@@ -55,7 +127,6 @@ class UserView(APIView):
             raise AuthenticationFailed('Unauthenticated')
 
         try:
-            # Include the 'algorithms' argument when decoding the JWT token
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
         except jwt.ExpiredSignatureError:
             raise AuthenticationFailed('Unauthenticated')
@@ -69,11 +140,7 @@ class UserView(APIView):
 class FileView(APIView):
     def get(self, request, title):
         file = get_object_or_404(UploadedFile, title=title)
-        # Perform any additional logic here if needed
-        # For example, you might want to check user permissions or do some processing.
-        # ...
 
-        # Return the file content as a response
         with open(file.file.path, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/octet-stream')
             response['Content-Disposition'] = f'attachment; filename="{file.title}"'
@@ -86,24 +153,35 @@ def index(request):
     return render(request, 'index.html')
 
 def user_login(request):
-    if request.method=='POST':
-        email=request.POST.get('email')
-        pass1=request.POST.get('pass')
-        user=authenticate(request,email=email,password=pass1)
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        pass1 = request.POST.get('pass')
+        user = authenticate(request, email=email, password=pass1)
+
         if user is not None:
-            auth_login(request,user)
-            return redirect('index')
+            # Check OTP
+            entered_otp = request.POST.get('otp')
+            user_obj = CustomUser.objects.get(email=email)
+
+            if user_obj.otp == entered_otp:
+                auth_login(request, user)
+                return redirect('index')
+            else:
+                return HttpResponse('Incorrect OTP. Please try again.')
         else:
-            return HttpResponse('email or password is incorrect!!!')
+            return HttpResponse('Email or password is incorrect!!!')
 
-    return render(request,'login.html')
+    return render(request, 'login.html')
 
 
+
+def generate_otp():
+    return str(random.randint(100000, 999999))
 
 def signup(request):
     if request.method == 'POST':
         email = request.POST.get('email')
-        address= request.POST.get('address')
+        address = request.POST.get('address')
         public_visibility = request.POST.get('public_visibility') == 'on'
         pass1 = request.POST.get('password1')
         pass2 = request.POST.get('password2')
@@ -114,10 +192,19 @@ def signup(request):
         if pass1 != pass2:
             return HttpResponse('Your Passwords are Not Matched')
         else:
-            my_user = CustomUser.objects.create_user(email=email, password=pass1, age=age, birth_year=birth_year, address=address,public_visibility=public_visibility)
+            my_user = CustomUser.objects.create_user(email=email, password=pass1, age=age, birth_year=birth_year, address=address, public_visibility=public_visibility)
+            
+            otp = generate_otp()
+            
+            my_user.otp = otp
             my_user.save()
+
+            send_otp_via_mail(email, otp)
+
             return redirect('login')
+    
     return render(request, 'signup.html')
+
 
 
 def logoutpage(request):

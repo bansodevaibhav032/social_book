@@ -10,12 +10,13 @@ from django.contrib.auth import get_user_model
 class CustomUser(AbstractUser):   
     username = None
     email = models.EmailField(unique=True)
-    password=models.CharField(max_length=255, blank=True, null=True)
+    password = models.CharField(max_length=255, blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
+    otp = models.CharField(max_length=6, null=True, blank=True)
     public_visibility = models.BooleanField(default=False)
     address = models.CharField(max_length=255, blank=True, null=True)
     age = models.PositiveIntegerField(null=True, blank=True)
     birth_year = models.PositiveIntegerField(null=True, blank=True)
-  
 
     def save(self, *args, **kwargs):
         current_year = 2024  
@@ -27,9 +28,6 @@ class CustomUser(AbstractUser):
                 pass
         super().save(*args, **kwargs)
 
-    
-
-    
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
@@ -45,5 +43,3 @@ class UploadedFile(models.Model):
 
     def __str__(self):
         return self.title
-
-        
