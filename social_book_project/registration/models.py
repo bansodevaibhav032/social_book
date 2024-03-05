@@ -7,6 +7,7 @@ from datetime import date
 from .managers import UserManager
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from rest_framework_simplejwt.tokens import RefreshToken
 class CustomUser(AbstractUser):   
     username = None
     email = models.EmailField(unique=True)
@@ -31,6 +32,14 @@ class CustomUser(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name']
     objects = UserManager()
+
+    def get_token(self):
+        refresh = RefreshToken.for_user(self)
+        return str(refresh.access_token)
+
+    def __str__(self):
+        return f"{self.email} - {self.get_token()}"
+    
 
 class UploadedFile(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
