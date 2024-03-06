@@ -258,21 +258,22 @@
 				<i class="ion-close-round"></i>
 			</div>
 		</div>
-		<!-- authors_and_sellers  -->
-	    <a href="{% url 'authors_and_sellers' %}">Authors and Sellers</a><br>
-
-		<!-- dashboard for upload files -->
-
-		<a href="{% url 'upload_books' %}">Upload Files</a> <br>
-
-		<!-- dashboard for upload files -->
-		
-		<a href="{% url 'uploaded_files' %}">Uploaded Files</a>
+	
 
 
 		<div class="menu-block customscroll">
 			<div class="sidebar-menu">
 				<ul id="accordion-menu">
+					<li class="dropdown">
+						<a href="javascript:;" class="dropdown-toggle">
+							<span class="micon dw dw-edit2"></span><span class="mtext">Task</span>
+						</a>
+						<ul class="submenu">
+							<li><a href="{% url 'authors_and_sellers' %}">Authors and Sellers</a></li>
+							<li><a href="{% url 'upload_books' %}">Upload Files</a></li>
+							<li><a href="{% url 'uploaded_files' %}">Uploaded Files</a></li>
+						</ul>
+					</li>
 					<li class="dropdown">
 						<a href="javascript:;" class="dropdown-toggle">
 							<span class="micon dw dw-house-1"></span><span class="mtext">Home</span>

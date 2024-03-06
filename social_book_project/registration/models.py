@@ -8,6 +8,8 @@ from .managers import UserManager
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
+
+
 class CustomUser(AbstractUser):   
     username = None
     email = models.EmailField(unique=True)
@@ -44,11 +46,17 @@ class CustomUser(AbstractUser):
 class UploadedFile(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     title = models.CharField(max_length=255)
-    file = models.FileField(upload_to='uploads/', help_text="Upload PDF or JPEG files only.")
+    file = models.FileField(upload_to='uploads/', help_text="Upload PDF ")
+    cover_photo = models.ImageField(upload_to='covers/', null=True, blank=True)
     description = models.TextField(blank=True)
     visibility = models.BooleanField(default=True, help_text="Set visibility")
     cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
     year_published = models.PositiveIntegerField(blank=True, null=True)
+
+    def get_cover_photo_url(self):
+        if self.cover_photo:
+            return self.cover_photo.url
+        return None
 
     def __str__(self):
         return self.title

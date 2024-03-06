@@ -1,11 +1,10 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser
-from .models import UploadedFile
+from .models import CustomUser, UploadedFile
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('email',  'age', 'birth_year', 'address', 'is_verified','public_visibility', 'is_staff', 'is_active',)
+    list_display = ('email', 'age', 'birth_year', 'address', 'is_verified', 'public_visibility', 'is_staff', 'is_active',)
     search_fields = ('email', )
     ordering = ('email',)
 
@@ -22,23 +21,22 @@ class CustomUserAdmin(UserAdmin):
             'fields': ('email',  'password1', 'password2', 'is_staff', 'is_active', 'age', 'birth_year', 'address', 'is_verified', 'public_visibility'),
         }),
     )
+
     def get_token(self, obj):
         return obj.get_token()
 
     get_token.short_description = 'Access Token'
 
-    # for Users Only
-    
+    # For regular users only
     def get_queryset(self, request):
-        # Override get_queryset to filter users in the list view
         qs = super().get_queryset(request)
         return qs.filter(is_superuser=False)
-    
-    #for SuperUseronly
+
+    # For superusers only
     # def get_queryset(self, request):
-    #     # Override get_queryset to filter users in the list view
     #     qs = super().get_queryset(request)
     #     return qs.filter(is_superuser=True)
+
 # Register the custom admin for CustomUser
 admin.site.register(CustomUser, CustomUserAdmin)
 admin.site.register(UploadedFile)

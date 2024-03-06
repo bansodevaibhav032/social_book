@@ -24,10 +24,6 @@ import random
 # Create your views here.
 class RegisterView(APIView):
     def post(self,request):
-        # serializer=UserSerializers(data=request.data)
-        # serializer.is_valid(raise_exception=True)
-        # serializer.save()
-        # return Response(serializer.data)
         try:
             data = request.data
             serializer = UserSerializers(data=data)
@@ -159,20 +155,37 @@ def user_login(request):
         user = authenticate(request, email=email, password=pass1)
 
         if user is not None:
-            # Check OTP
-            entered_otp = request.POST.get('otp')
             user_obj = CustomUser.objects.get(email=email)
 
-            if user_obj.otp == entered_otp:
+            if user_obj.is_verified:
                 auth_login(request, user)
                 return redirect('index')
             else:
-                return HttpResponse('Incorrect OTP. Please try again.')
+                # Redirect to verification page if not verified
+                return redirect('verify_otp_page', email=email)
         else:
             return HttpResponse('Email or password is incorrect!!!')
 
     return render(request, 'login.html')
 
+def verify_otp_page(request, email):
+    error_message = None
+
+    if request.method == 'POST':
+        entered_otp = request.POST.get('otp')
+        user_obj = CustomUser.objects.get(email=email)
+
+        if user_obj.otp == entered_otp:
+            # Correct OTP, mark user as verified and redirect to the index page
+            user_obj.is_verified = True
+            user_obj.save()
+            return redirect('index')  # Redirect to your index page
+
+        else:
+            # Incorrect OTP, set an error message
+            error_message = 'Incorrect OTP. Please try again.'
+
+    return render(request, 'verify_otp_page.html', {'email': email, 'error_message': error_message})
 
 
 def generate_otp():
@@ -252,6 +265,7 @@ def authors_and_sellers(request):
 
     return render(request, 'authors_and_sellers.html', context)
 
+@login_required(login_url='login')
 def upload_books(request):
     if request.method == 'POST':
         form = UploadFileForm(request.POST, request.FILES)
@@ -267,7 +281,7 @@ def upload_books(request):
 
     return render(request, 'uploadfile.html', {'form': form})
 
-
+@login_required(login_url='login')
 def uploaded_files(request):
     uploaded_files = UploadedFile.objects.filter(user=request.user)
     return render(request, 'uploadedfiles.html', {'uploaded_files': uploaded_files})
