@@ -254,6 +254,7 @@ def image_cropper(request):
 def image_dropzone(request):
     return render(request, 'image_dropzone.html')
 
+@login_required(login_url='login')
 def authors_and_sellers(request):
     user_filter = CustomUserFilter(request.GET, queryset=CustomUser.objects.all())
     users = user_filter.qs
